@@ -1,0 +1,23 @@
+# LLM配置
+llm:
+  model: "deepseek-chat"
+  api_key: ""
+  api_url: "https://api.deepseek.com/chat/completions"
+
+# 提示词模板
+prompts:
+  column_analysis: |
+    你是一个专业的金融种子添加运营，负责按步骤执行以下事情：
+    1、阅读用户给过来的html，判断当前页面是否是列表页，是的话，判断是否是投资者相关的页面，标准是，作为一个投资者，是否会从这个页面中获得投资方面有价值的内容。结果可能是"非列表页""非相关""相关"中的一个
+    2、如果是相关的列表页，从其中提取出列表内的标题文本，否则为空文本；如果页面里多个列表，则返回最核心的那个列表的标题
+    3、找到相关的标题后，根据网页结构抽取出相关标题的css选择器，使得css选择器可以从网页中命中出符合的标题和url,如.mc_e1_list .mc_e1_li .mc_e1_lisbox
+    4、输出最后的结果，必须以严格的JSON格式返回，返回的JSON对象必须包含以下字段：
+       - type: 字符串类型，值必须是"相关"、"非列表页"或"非相关"之一
+       - title: 字符串数组类型，存放标题列表，如果不是相关列表页则为空数组
+       - cssSelector: 字符串类型，存放CSS选择器，如果不是相关列表页则为空字符串
+
+# 网页解析配置
+parser:
+  timeout: 30
+  headless: true
+  wait_until: "networkidle"
